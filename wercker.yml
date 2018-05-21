@@ -1,0 +1,33 @@
+
+box: debian:stable-slim
+build:
+    steps:
+        - shellcheck
+
+        - install-packages:
+            packages: curl
+
+        - script:
+            name: config
+            code: |
+                export KUBERNETES_VERSION="1.7.6"
+                export KUBERNETES_SHA256="0d46a9c297d193bc193487aa1734141be764a0078759748ec800f92bd183de5f"
+                echo "Installing version $KUBERNETES_VERSION of kubernetes"
+        - script:
+            name: fetch kubernetes archive
+            code: |
+                curl -L https://dl.k8s.io/v${KUBERNETES_VERSION}/kubernetes-client-linux-amd64.tar.gz > kubernetes-client-linux-amd64.tar.gz
+                sha256sum kubernetes-client-linux-amd64.tar.gz | grep -q "$KUBERNETES_SHA256"
+                tar xvzf kubernetes-client-linux-amd64.tar.gz
+                kubernetes/client/bin/kubectl version --client
+        - script:
+            name: prepare output
+            #code: cp "kubernetes/client/bin/kubectl" "LICENSE" "README.md" "run.sh" "wercker.yml" "step.yml" "$WERCKER_OUTPUT_DIR"
+            code: cp "kubernetes/client/bin/kubectl" "LICENSE" "run.sh" "wercker.yml" "step.yml" "$WERCKER_OUTPUT_DIR"
+
+publish:
+  steps:
+    - internal/publish-step:
+        owner: wercker
+
+
