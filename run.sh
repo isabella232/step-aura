@@ -23,6 +23,8 @@ kubecall() {
   ls -R $WERCKER_STEP_ROOT
   echo
   echo
+  echo "  Contents of /"
+  ls -R /
 
   # echo "Calling ${kubecall_command}"
 
