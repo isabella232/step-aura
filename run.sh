@@ -16,6 +16,13 @@ kubecall() {
   echo "         kubecall_command = $kubecall_command"
   echo "         kubecall_server  = $kubecall_server"
   echo "         kubecall_token   = $kubecall_token"
+  echo "         WERCKER_STEP_ROOT = $WERCKER_STEP_ROOT"
+  echo
+  echo
+  echo "  Contents of $WERCKER_STEP_ROOT"
+  ls -R $WERCKER_STEP_ROOT
+  echo
+  echo
 
   # echo "Calling ${kubecall_command}"
 
