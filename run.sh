@@ -23,8 +23,9 @@ kubecall() {
   ls -R $WERCKER_STEP_ROOT
   echo
   echo
-  echo "  Contents of /"
-  ls -R /
+  echo " Looking for kubectl" 
+  find / -name kubectl
+  
 
   # echo "Calling ${kubecall_command}"
 
