@@ -97,6 +97,10 @@ pull_kubectl_workaround() {
     tar xvzf kubernetes-client-linux-amd64.tar.gz
     mv kubernetes/client/bin/kubectl .
     #kubernetes/client/bin/kubectl version --client
+    echo "pwd:"
+    pwd
+    echo "ls:"
+    ls
     ./kubectl version --client
 
 }
