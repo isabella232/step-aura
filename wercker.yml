@@ -21,9 +21,15 @@ build:
                 tar xvzf kubernetes-client-linux-amd64.tar.gz
                 kubernetes/client/bin/kubectl version --client
         - script:
+            name: fetch helm archive
+            code: |
+                curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.8.2-linux-amd64.tar.gz > helm-v2.8.2-linux-amd64.tar.gz
+                tar xvzf helm-v2.8.2-linux-amd64.tar.gz
+                linux-amd64/helm --version
+        - script:
             name: prepare output
             #code: cp "kubernetes/client/bin/kubectl" "LICENSE" "README.md" "run.sh" "wercker.yml" "step.yml" "$WERCKER_OUTPUT_DIR"
-            code: cp "kubernetes/client/bin/kubectl" "LICENSE" "run.sh" "wercker.yml" "step.yml" "$WERCKER_OUTPUT_DIR"
+            code: cp "kubernetes/client/bin/kubectl" "linux-amd64/helm" "LICENSE" "run.sh" "wercker.yml" "step.yml" "$WERCKER_OUTPUT_DIR"
 
 publish:
   steps:
