@@ -125,7 +125,7 @@ pull_kubectl_workaround() {
     curl -L https://dl.k8s.io/v1.6.7/kubernetes-client-linux-amd64.tar.gz > kubernetes-client-linux-amd64.tar.gz
     sha256sum kubernetes-client-linux-amd64.tar.gz | grep -q "$KUBERNETES_SHA256"
     tar xvzf kubernetes-client-linux-amd64.tar.gz
-    echo "moving kubectl from $CWD to $WERCKER_STEP_ROOT"
+    echo "moving kubectl from $PWD to $WERCKER_STEP_ROOT"
     mv kubernetes/client/bin/kubectl "$WERCKER_STEP_ROOT/"
     #kubernetes/client/bin/kubectl version --client
     ${WERCKER_STEP_ROOT}/kubectl version --client
@@ -141,8 +141,10 @@ pull_helm_workaround() {
     echo "About to pull helm"
     curl -L $helm_url
     echo "About to extract helm"
-    tar xvzf ${helm_archive}
-    echo "moving helm client from $CWD to $WERCKER_STEP_ROOT"
+    tar xzf ${helm_archive}
+    echo "just did -  tar xzf ${helm_archive}"
+    echo "moving helm client from $PWD to $WERCKER_STEP_ROOT"
+    ls linux-amd64
     mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
 
     echo "Test Helm"
