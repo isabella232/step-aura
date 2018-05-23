@@ -95,13 +95,10 @@ pull_kubectl_workaround() {
     curl -L https://dl.k8s.io/v1.6.7/kubernetes-client-linux-amd64.tar.gz > kubernetes-client-linux-amd64.tar.gz
     sha256sum kubernetes-client-linux-amd64.tar.gz | grep -q "$KUBERNETES_SHA256"
     tar xvzf kubernetes-client-linux-amd64.tar.gz
-    mv kubernetes/client/bin/kubectl .
+    echo "moving kubectl from $CWD to $WERCKER_STEP_ROOT"
+    mv kubernetes/client/bin/kubectl "$WERCKER_STEP_ROOT/"
     #kubernetes/client/bin/kubectl version --client
-    echo "pwd:"
-    pwd
-    echo "ls:"
-    ls
-    ./kubectl version --client
+    ${WERCKER_STEP_ROOT}/kubectl version --client
 
 }
 
