@@ -17,13 +17,7 @@ kubecall() {
   echo "         kubecall_server  = $kubecall_server"
   echo "         kubecall_token   = $kubecall_token"
   echo "         WERCKER_STEP_ROOT = $WERCKER_STEP_ROOT"
-  echo
-  echo
-  echo "  Contents of $WERCKER_STEP_ROOT"
-  ls -R $WERCKER_STEP_ROOT
-  echo
-  echo
-  
+ 
 
   # echo "Calling ${kubecall_command}"
 
@@ -113,7 +107,11 @@ main() {
   # for unpublished step, pull kubectl from here
   pull_kubectl_workaround
 
-
+  echo
+  echo "  Contents of $WERCKER_STEP_ROOT"
+  ls -R $WERCKER_STEP_ROOT
+  echo
+ 
   # kubecall "get pods --all-namespaces" "$server" "$token"
  
   echo "Create aura namespace"
