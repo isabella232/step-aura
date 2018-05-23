@@ -116,7 +116,7 @@ generate_kubeconfig() {
 
 
 save_kubeconfig() {
-
+  echo
 }
 
 
