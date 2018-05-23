@@ -97,7 +97,7 @@ generate_kubeconfig() {
     clusters:
       - cluster:
           insecure-skip-tls-verify: true
-          server: ${master}}
+          server: ${master}
         name: cluster-${clusterId}
     contexts:
       - context:
@@ -138,12 +138,14 @@ pull_helm_workaround() {
     helm_version=2.8.2
     helm_archive=helm-v${helm_version}-linux-amd64.tar.gz
     helm_url=https://storage.googleapis.com/kubernetes-helm/${helm_archive}
+    echo "About to pull helm"
     curl -L $helm_url
+    echo "About to extract helm"
     tar xvzf ${helm_archive}
     echo "moving helm client from $CWD to $WERCKER_STEP_ROOT"
-
     mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
 
+    echo "Test Helm"
     ${WERCKER_STEP_ROOT}/helm version 
 
 }
@@ -171,11 +173,6 @@ main() {
   pull_kubectl_workaround
   # for unpublished step, pull helm from here
   pull_helm_workaround
-
-  echo
-  echo "Test helm"
-  ${WERCKER_STEP_ROOT}/helm version 
-  
 
   echo
   echo "  Contents of $WERCKER_STEP_ROOT"
