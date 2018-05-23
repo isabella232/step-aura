@@ -139,12 +139,13 @@ pull_helm_workaround() {
     helm_archive=helm-v${helm_version}-linux-amd64.tar.gz
     helm_url=https://storage.googleapis.com/kubernetes-helm/${helm_archive}
     echo "About to pull helm"
-    curl -L $helm_url
+    curl -L $helm_url > $helm_archive
     echo "About to extract helm"
-    tar xzf ${helm_archive}
+    tar xvzf ${helm_archive}
     echo "just did -  tar xzf ${helm_archive}"
-    echo "moving helm client from $PWD to $WERCKER_STEP_ROOT"
+    echo "showing listing of linux-amd64"
     ls linux-amd64
+    echo "moving helm client from $PWD to $WERCKER_STEP_ROOT"
     mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
 
     echo "Test Helm"
