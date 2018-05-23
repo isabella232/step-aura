@@ -83,6 +83,42 @@ display_version() {
   echo ""
 }
 
+generate_kubeconfig() {
+    master="$1"
+    token="$2"
+    clusterId="$3"
+
+    echo "create /root/.kube"
+    mkdir -p /root/.kube
+
+    echo "Write config to file using master: ${master}, clusterId: ${clusterId}"
+    echo "
+    apiVersion: v1
+    clusters:
+      - cluster:
+          insecure-skip-tls-verify: true
+          server: ${master}}
+        name: cluster-${clusterId}
+    contexts:
+      - context:
+          cluster: cluster-${clusterId}
+          user: user-${clusterId}
+        name: context-${clusterId}
+    current-context: context-${clusterId}
+    kind: \"\"
+    users:
+      - name: user-${clusterId}
+        user:
+              token: ${token}
+    " > /root/.kube/config
+
+}
+
+
+save_kubeconfig() {
+
+}
+
 
 # this should not be needed for the published step, but is needed for testing the unpublished step
 pull_kubectl_workaround() {
@@ -96,6 +132,24 @@ pull_kubectl_workaround() {
 
 }
 
+
+# this should not be needed for the published step, but is needed for testing the unpublished step
+pull_helm_workaround() {
+    helm_version=2.8.2
+    helm_archive=helm-v${helm_version}-linux-amd64.tar.gz
+    helm_url=https://storage.googleapis.com/kubernetes-helm/${helm_archive}
+    curl -L $helm_url
+    tar xvzf ${helm_archive}
+    echo "moving helm client from $CWD to $WERCKER_STEP_ROOT"
+
+    mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
+
+    ${WERCKER_STEP_ROOT}/helm version 
+
+}
+
+
+
 main() {
 
   server="$WERCKER_STEP_AURA_SERVER"
@@ -104,8 +158,24 @@ main() {
   echo "main: WERCKER_STEP_AURA_SERVER - $WERCKER_STEP_AURA_SERVER"
   echo "main: WERCKER_STEP_AURA_TOKEN - $WERCKER_STEP_AURA_TOKEN"
 
+  generate_kubeconfig "$server" "$token" "cluster1"
+
+  echo "Created kubeconfig:"
+  cat /root/.kube/config
+
+  # this part should alternatively take a pasted kubeconfig 
+  # and make kubecall just use the right context in the new file
+
+
   # for unpublished step, pull kubectl from here
   pull_kubectl_workaround
+  # for unpublished step, pull helm from here
+  pull_helm_workaround
+
+  echo
+  echo "Test helm"
+  ${WERCKER_STEP_ROOT}/helm version 
+  
 
   echo
   echo "  Contents of $WERCKER_STEP_ROOT"
