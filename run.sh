@@ -67,9 +67,6 @@ kubecall() {
     echo "INFO: kubectl $global_args $raw_global_args $cmd $args $raw_args"
   fi
 
-  echo
-  echo
-
   echo  eval "$kubectl" "$global_args" "$raw_global_args" "$cmd" "$args" "$raw_args"
   eval "$kubectl" "$global_args" "$raw_global_args" "$cmd" "$args" "$raw_args"
 
