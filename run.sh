@@ -146,7 +146,7 @@ pull_helm_workaround() {
     mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
 
     echo "Test Helm"
-    ${WERCKER_STEP_ROOT}/helm version 
+    ${WERCKER_STEP_ROOT}/helm version --client
 
 }
 
