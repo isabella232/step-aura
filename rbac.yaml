@@ -23,42 +23,42 @@ metadata:
   name: helm
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: helm
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
 subjects:
   - kind: ServiceAccount
     name: helm
     namespace: kube-system
----
-# Needed on OCI cluster for registry TODO - fix in helm charts
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: cluster-system-anonymous
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
+---
+# Needed on OCI cluster for registry TODO - fix in helm charts
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: cluster-system-anonymous
 subjects:
   - kind: User
     name: system:anonymous
----
-  # Needed on OCI cluster for mock service TODO - fix in helm charts
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: add-on-cluster-admin-for-aura-default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
+---
+# Needed on OCI cluster for mock service TODO - fix in helm charts
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: add-on-cluster-admin-for-aura-default
 subjects:
   - kind: ServiceAccount
     name: default
     namespace: aura
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
