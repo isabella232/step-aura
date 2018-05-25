@@ -193,8 +193,9 @@ main() {
 
   # this should come from public public storage
   echo "PWD: `pwd`"
+  echo "show $WERCKER_STEP_ROOT"
   echo "ls:"
-  ls
+  ls $WERCKER_STEP_ROOT
   echo "kubecall \"apply -f aura-installer-job.yml\"" 
   kubecall "apply -f aura-installer-job.yml" "$server" "$token"
 
