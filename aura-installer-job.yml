@@ -4,7 +4,7 @@ metadata:
   name: install-aura
   namespace: aura
 spec:
-  activeDeadlineSeconds: 60120
+  activeDeadlineSeconds: 6120
   backoffLimit: 10  
   template:
     spec:
@@ -27,14 +27,14 @@ spec:
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always --set global.imagepullsecret=aura-install-job --set global.images.pullSecret=aura-install-job"
         imagePullPolicy: Always
       - name: observability-tools
         image: phx.ocir.io/oraclepaasmicroservices/aura/observability-tools-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always" 
+          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always --set global.imagepullsecret=aura-install-job --set global.images.pullSecret=aura-install-job"
         imagePullPolicy: Always
       containers:
       - name: installation-complete
@@ -42,3 +42,5 @@ spec:
         command: ['sh', '-c', 'echo "Helm, Istio and Aura Installed"']
         imagePullPolicy: IfNotPresent
       restartPolicy: Never
+      imagePullSecrets: 
+      - name: aura-install-job
