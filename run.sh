@@ -191,6 +191,10 @@ main() {
   echo "Set up Istio injection"
   kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
 
+
+  echo "Delete previous install job"
+  kubecall "delete job -n aura install-aura --ignore-not-found"
+
   # this should come from public public storage
   echo "Apply the installer job"
   kubecall "apply -f ${WERCKER_STEP_ROOT}/aura-installer-job.yml" "$server" "$token"
