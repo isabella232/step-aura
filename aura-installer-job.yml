@@ -1,11 +1,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: install-aura
+  name: install-events-broker
   namespace: aura
 spec:
-  activeDeadlineSeconds: 60120
-  backoffLimit: 30  
+  activeDeadlineSeconds: 600
+  backoffLimit: 10
   template:
     spec:
       serviceAccountName: aura-job
@@ -18,25 +18,36 @@ spec:
         image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
         command: ["helm", "ls"]
         imagePullPolicy: Always
-      - name: api-registry
-        image: phx.ocir.io/oraclepaasmicroservices/aura/api-registry-install:0.2.1-SNAPSHOT
-        command: ["sh", "-c", "install-chart"]
+      - name: istio-install
+        image: phx.ocir.io/oraclepaasmicroservices/aura/istio-install:0.2.1-SNAPSHOT
+        command: ["sh", "-c", "install-istio"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+          value: " --set sidecar-injector.enabled=true --set sidecar-injector.includeIPRanges=10.21.0.0/16 --set global.proxy.image=proxyv2 --set grafana.enabled=true --set prometheus.enabled=true --set zipkin.enabled=true"
         imagePullPolicy: Always
-      - name: observability-tools
-        image: phx.ocir.io/oraclepaasmicroservices/aura/observability-tools-install:0.2.1-SNAPSHOT
+      - name: kafka
+        image: phx.ocir.io/oraclepaasmicroservices/aura/kafka-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+          value: " --set Persistence.enabled=false --set zookeeper.Persistence.enabled=false"
+        imagePullPolicy: Always
+      - name: events-broker
+        image: phx.ocir.io/oraclepaasmicroservices/aura/events-broker-install:0.2.1-SNAPSHOT
+        command: ["sh", "-c", "install-chart"]
+        env:
+        - name: HELM_OPTS
+          value: " --set apiserver.persistence.size=50Gi --set global.namespace=aura-eb --set global.kafka.enabled=false --set global.kafka.url=kafka-kafka.kafka:9092 --set global.zipkinUrl='http://zipkin.istio-system:9411' --set global.fnServerUrl='http://fn-fn-api.default:80/r'"
+        imagePullPolicy: Always
+      - name: fn
+        image: phx.ocir.io/oraclepaasmicroservices/aura/fn-install:0.2.1-SNAPSHOT
+        command: ["sh", "-c", "install-chart"]
         imagePullPolicy: Always
       containers:
       - name: installation-complete
         image: busybox
-        command: ['sh', '-c', 'echo "Helm, Istio and Aura Installed"']
-        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'echo "Helm, Istio, Kafka, Fn and Events Broker Installed"']
+        imagePullPolicy: Always
       restartPolicy: Never
-      imagePullSecrets: 
+      imagePullSecrets:
       - name: aura-install-job
