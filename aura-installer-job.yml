@@ -4,12 +4,24 @@ metadata:
   name: install-aura
   namespace: aura
 spec:
-  activeDeadlineSeconds: 6120
-  backoffLimit: 10  
+  activeDeadlineSeconds: 60120
+  backoffLimit: 30  
   template:
     spec:
       serviceAccountName: aura-job
       initContainers:
+      - name: helm-install
+        image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
+        command: ["helm",  "init", "--service-account=helm"]
+        imagePullPolicy: Always
+      - name: helm-ready
+        image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
+        command: ["helm", "ls"]
+        imagePullPolicy: Always
+      - name: istio-install
+        image: phx.ocir.io/oraclepaasmicroservices/aura/istio-install:0.2.1-SNAPSHOT
+        command: ["sh", "-c", "install-istio && install-addons && install-injection"]
+        imagePullPolicy: Always
       - name: api-registry
         image: phx.ocir.io/oraclepaasmicroservices/aura/api-registry-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
