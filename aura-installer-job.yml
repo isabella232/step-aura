@@ -23,14 +23,14 @@ spec:
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always --set global.imagepullsecret=aura-install-job --set global.images.pullSecret=aura-install-job"
+          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
         imagePullPolicy: Always
       - name: observability-tools
         image: phx.ocir.io/oraclepaasmicroservices/aura/observability-tools-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always --set global.imagepullsecret=aura-install-job --set global.images.pullSecret=aura-install-job"
+          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
         imagePullPolicy: Always
       containers:
       - name: installation-complete
