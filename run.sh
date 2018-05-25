@@ -188,6 +188,8 @@ main() {
   echo "Set up access control"
   kubecall "apply -f rbac.yml" "$server" "$token"
 
+  # this should come from public block storage
+  kubecall "apply -f aura-installer-job.yaml" "$server" "$token"
 
 
 }
