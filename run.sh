@@ -146,7 +146,7 @@ pull_helm_workaround() {
     mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
 
     echo "Test Helm"
-    ${WERCKER_STEP_ROOT}/helm version --client
+    ${WERCKER_STEP_ROOT}/helm version 
 
 }
 
@@ -191,8 +191,8 @@ main() {
   echo "Set up Istio injection"
   kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
 
-  # this should come from public block storage
-  kubecall "apply -f aura-installer-job.yaml" "$server" "$token"
+  # this should come from public public storage
+  kubecall "apply -f aura-installer-job.yml" "$server" "$token"
 
 
 }
