@@ -18,10 +18,6 @@ spec:
         image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
         command: ["helm", "ls"]
         imagePullPolicy: Always
-      - name: istio-install
-        image: phx.ocir.io/oraclepaasmicroservices/aura/istio-install:0.2.1-SNAPSHOT
-        command: ["sh", "-c", "install-istio && install-addons && install-injection"]
-        imagePullPolicy: Always
       - name: api-registry
         image: phx.ocir.io/oraclepaasmicroservices/aura/api-registry-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
