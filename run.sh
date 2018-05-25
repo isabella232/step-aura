@@ -193,7 +193,7 @@ main() {
 
 
   echo "Delete previous install job"
-  kubecall "delete job -n aura install-aura --ignore-not-found"
+  kubecall "delete job -n aura install-aura --ignore-not-found" "$server" "$token"
 
   # this should come from public public storage
   echo "Apply the installer job"
