@@ -186,17 +186,13 @@ main() {
   kubecall "create namespace aura" "$server" "$token" || true
 
   echo "Set up access control"
-  kubecall "apply -f rbac.yml" "$server" "$token"
+  kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
 
   echo "Set up Istio injection"
   kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
 
   # this should come from public public storage
-  echo "PWD: `pwd`"
-  echo "show $WERCKER_STEP_ROOT"
-  echo "ls:"
-  ls $WERCKER_STEP_ROOT
-  echo "kubecall \"apply -f aura-installer-job.yml\"" 
+  echo "kubecall \"apply -f ${WERCKER_STEP_ROOT}/aura-installer-job.yml\"" 
   kubecall "apply -f aura-installer-job.yml" "$server" "$token"
 
 
