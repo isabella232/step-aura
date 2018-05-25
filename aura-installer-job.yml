@@ -43,6 +43,20 @@ spec:
         image: phx.ocir.io/oraclepaasmicroservices/aura/fn-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
         imagePullPolicy: Always
+      - name: api-registry
+        image: phx.ocir.io/oraclepaasmicroservices/aura/api-registry-install:0.2.1-SNAPSHOT
+        command: ["sh", "-c", "install-chart"]
+        env:
+        - name: HELM_OPTS
+          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+        imagePullPolicy: Always
+      - name: observability-tools
+        image: phx.ocir.io/oraclepaasmicroservices/aura/observability-tools-install:0.2.1-SNAPSHOT
+        command: ["sh", "-c", "install-chart"]
+        env:
+        - name: HELM_OPTS
+          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+        imagePullPolicy: Always
       containers:
       - name: installation-complete
         image: busybox
