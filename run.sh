@@ -192,6 +192,10 @@ main() {
   kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
 
   # this should come from public public storage
+  echo "PWD: `pwd`"
+  echo "ls:"
+  ls
+  echo "kubecall \"apply -f aura-installer-job.yml\"" 
   kubecall "apply -f aura-installer-job.yml" "$server" "$token"
 
 
