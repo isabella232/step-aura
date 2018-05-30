@@ -15,7 +15,6 @@ kubecall() {
   echo "kubecall called with: "
   echo "         kubecall_command = $kubecall_command"
   echo "         kubecall_server  = $kubecall_server"
-  echo "         kubecall_token   = $kubecall_token"
   echo "         WERCKER_STEP_ROOT = $WERCKER_STEP_ROOT"
  
 
@@ -158,6 +157,9 @@ main() {
   echo "main: WERCKER_STEP_AURA_SERVER - $WERCKER_STEP_AURA_SERVER"
   echo "main: WERCKER_STEP_AURA_TOKEN - $WERCKER_STEP_AURA_TOKEN"
 
+  echo "main: WERCKER_STEP_AURA_PULL_DEPENDENCIES - $WERCKER_STEP_AURA_PULL_DEPENDENCIES"
+  echo "main: WERCKER_STEP_AURA_DEPENDENCIES - $WERCKER_STEP_AURA_DEPENDENCIES"
+
   generate_kubeconfig "$server" "$token" "cluster1"
 
   echo "Created kubeconfig:"
@@ -167,9 +169,18 @@ main() {
   # and make kubecall just use the right context in the new file
 
   # for unpublished step, pull kubectl from here
-  pull_kubectl_workaround
+  if [ "$WERCKER_STEP_AURA_PULL_DEPENDENCIES" == "true" ] ; then
+      echo "INFO: pulling kubectl"
+      pull_kubectl_workaround
+  fi
   # for unpublished step, pull helm from here
-  pull_helm_workaround
+  if [ "$WERCKER_STEP_AURA_DEPENDENCIES" == "true" ] ; then
+      echo "INFO: pulling helm"
+      pull_helm_workaround
+  fi
+
+  ## !! for testing
+  exit
 
   echo
   echo "  Contents of $WERCKER_STEP_ROOT"
