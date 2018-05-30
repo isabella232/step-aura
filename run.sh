@@ -115,7 +115,7 @@ save_kubeconfig() {
 
 
 # this should not be needed for the published step, but is needed for testing the unpublished step
-pull_kubectl_workaround() {
+pull_kubectl() {
     curl -L https://dl.k8s.io/v1.6.7/kubernetes-client-linux-amd64.tar.gz > kubernetes-client-linux-amd64.tar.gz
     sha256sum kubernetes-client-linux-amd64.tar.gz | grep -q "$KUBERNETES_SHA256"
     tar xvzf kubernetes-client-linux-amd64.tar.gz
@@ -128,7 +128,7 @@ pull_kubectl_workaround() {
 
 
 # this should not be needed for the published step, but is needed for testing the unpublished step
-pull_helm_workaround() {
+pull_helm() {
     helm_version=2.8.2
     helm_archive=helm-v${helm_version}-linux-amd64.tar.gz
     helm_url=https://storage.googleapis.com/kubernetes-helm/${helm_archive}
@@ -158,7 +158,6 @@ main() {
   echo "main: WERCKER_STEP_AURA_TOKEN - $WERCKER_STEP_AURA_TOKEN"
 
   echo "main: PULL_DEPENDENCIES - $PULL_DEPENDENCIES"
-  echo "main: KUBERNETES_MASTER - $KUBERNETES_MASTER"
 
   generate_kubeconfig "$server" "$token" "cluster1"
 
@@ -168,19 +167,14 @@ main() {
   # this part should alternatively take a pasted kubeconfig 
   # and make kubecall just use the right context in the new file
 
-  # for unpublished step, pull kubectl from here
-  if [ "$WERCKER_STEP_AURA_PULL_DEPENDENCIES" == "true" ] ; then
+  # for running an unpublished step, kubectl and helm must be pulled during run
+  # for a published step, they will be installed as part of the step's image
+  if [ "$PULL_DEPENDENCIES" == "true" ] ; then
       echo "INFO: pulling kubectl"
-      pull_kubectl_workaround
-  fi
-  # for unpublished step, pull helm from here
-  if [ "$WERCKER_STEP_AURA_DEPENDENCIES" == "true" ] ; then
+      pull_kubectl
       echo "INFO: pulling helm"
-      pull_helm_workaround
+      pull_helm
   fi
-
-  ## !! for testing
-  exit
 
   echo
   echo "  Contents of $WERCKER_STEP_ROOT"
