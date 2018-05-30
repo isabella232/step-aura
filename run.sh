@@ -19,8 +19,6 @@ kubecall() {
   echo "         WERCKER_STEP_ROOT = $WERCKER_STEP_ROOT"
  
 
-  # echo "Calling ${kubecall_command}"
-
   if [ -z "$kubecall_command" ]; then
     fail "kubecall: command argument cannot be empty"
     # local echo "FAIL: kubecall: command argument cannot be empty"
@@ -168,7 +166,6 @@ main() {
   # this part should alternatively take a pasted kubeconfig 
   # and make kubecall just use the right context in the new file
 
-
   # for unpublished step, pull kubectl from here
   pull_kubectl_workaround
   # for unpublished step, pull helm from here
@@ -190,7 +187,6 @@ main() {
 
   echo "Set up Istio injection"
   kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
-
 
   echo "Delete previous install job"
   kubecall "delete job -n aura install-aura --ignore-not-found" "$server" "$token"
