@@ -34,11 +34,11 @@ spec:
         image: phx.ocir.io/oraclepaasmicroservices/aura/istio-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "delete-injection && delete-addons && delete-istio"]
         imagePullPolicy: IfNotPresent
-       - name: helm-reset
+      - name: helm-reset
         image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
         command: ["helm", "reset"]
         imagePullPolicy: IfNotPresent
-       containers:
+      containers:
       - name: installation-complete
         image: busybox
         command: ['sh', '-c', 'echo "Helm, Istio, Aura, Kafka, Fn and Events Broker Uninstalled"']
