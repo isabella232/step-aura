@@ -171,15 +171,8 @@ main() {
   fi
 
 
-  echo "Create aura namespace"
-  # don't fail here if aura namespace exists
-  kubecall "create namespace aura" "$server" "$token" || true
-
   echo "Set up access control"
   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
-
-  echo "Set up Istio injection"
-  kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
 
   if [ "$INSTALL_TYPE" = "uninstall" ] ; then
       echo "Uninstalling Aura"
@@ -196,6 +189,13 @@ main() {
       #kubecall "delete job -n aura install-aura --ignore-not-found" "$server" "$token"
       kubecall "delete job -n aura install-aura-full --ignore-not-found" "$server" "$token"
       #kubecall "delete job -n aura install-events-broker --ignore-not-found" "$server" "$token"
+
+      echo "Create aura namespace"
+      # don't fail here if aura namespace exists
+      kubecall "create namespace aura" "$server" "$token" || true
+
+      echo "Set up Istio injection"
+      kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
 
       # this should come from public public storage
       echo "Apply the installer job"
