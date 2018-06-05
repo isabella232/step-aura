@@ -34,10 +34,6 @@ spec:
         image: phx.ocir.io/oraclepaasmicroservices/aura/istio-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "delete-istio"]
         imagePullPolicy: IfNotPresent
-      - name: helm-reset
-        image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
-        command: ["helm", "reset"]
-        imagePullPolicy: IfNotPresent
       containers:
       - name: installation-complete
         image: busybox

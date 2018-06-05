@@ -139,7 +139,7 @@ pull_helm() {
     mv linux-amd64/helm "$WERCKER_STEP_ROOT/"
 
     echo "Test Helm"
-    ${WERCKER_STEP_ROOT}/helm version 
+    ${WERCKER_STEP_ROOT}/helm version --client
 
 }
 
@@ -173,6 +173,8 @@ main() {
 
   echo "Set up access control"
   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
+
+  # lowerCase=$(echo "$INSTALL_TYPE" | tr '[:upper:]' '[:lower:]' )
 
   if [ "$INSTALL_TYPE" = "uninstall" ] ; then
       echo "Uninstalling Aura"
