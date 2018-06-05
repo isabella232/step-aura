@@ -32,7 +32,7 @@ spec:
         imagePullPolicy: IfNotPresent
       - name: istio-delete
         image: phx.ocir.io/oraclepaasmicroservices/aura/istio-install:0.2.1-SNAPSHOT
-        command: ["sh", "-c", "delete-injection && delete-addons && delete-istio"]
+        command: ["sh", "-c", "delete-istio"]
         imagePullPolicy: IfNotPresent
       - name: helm-reset
         image: phx.ocir.io/oraclepaasmicroservices/aura/helm-base:0.2.1-SNAPSHOT
