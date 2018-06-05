@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: install-events-broker
+  name: install-aura-full
   namespace: aura
 spec:
   activeDeadlineSeconds: 600
@@ -60,7 +60,7 @@ spec:
       containers:
       - name: installation-complete
         image: busybox
-        command: ['sh', '-c', 'echo "Helm, Istio, Kafka, Fn and Events Broker Installed"']
+        command: ['sh', '-c', 'echo "Helm, Istio, Aura, Kafka, Fn and Events Broker Installed"']
         imagePullPolicy: Always
       restartPolicy: Never
       imagePullSecrets:
