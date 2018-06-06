@@ -49,7 +49,7 @@ kubecall() {
   # server
   if [ -n "$kubecall_server" ]; then
     #global_args="$global_args --server=\"$kubecall_server\""
-    echo "global_args=\"$global_args --server=\"$kubecall_server\""
+    echo "skipping server param"
   else
     fail "kubecall: server argument cannot be empty"
   fi
@@ -57,11 +57,10 @@ kubecall() {
   # token
   if [ -n "$kubecall_token" ]; then
     # global_args="$global_args --token=\"$kubecall_token\""
-    echo "global_args=\"$global_args --token=\"$kubecall_token\""
+    echo "skipping token param"
   else
     fail "kubecall: token argument cannot be empty"
   fi
-
 
   # client-certificate
   if [ -n "$WERCKER_KUBECTL_CLIENT_CERTIFICATE" ]; then
@@ -167,6 +166,7 @@ main() {
   # echo "INFO: WERCKER_STEP_AURA_TOKEN - $WERCKER_STEP_AURA_TOKEN"
   echo "INFO: PULL_DEPENDENCIES - $PULL_DEPENDENCIES"
   echo "INFO: INSTALL_TYPE - $INSTALL_TYPE"
+  echo "INFO: KUBECONFIG_TEXT - $KUBECONFIG_TEXT"
 
   # this part should alternatively take a pasted kubeconfig 
   # and make kubecall just use the right context in the new file
@@ -203,7 +203,7 @@ main() {
   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
 
   # for testing
-  exit
+  exit 0
 
   # lowerCase=$(echo "$INSTALL_TYPE" | tr '[:upper:]' '[:lower:]' )
 
