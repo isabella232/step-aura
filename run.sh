@@ -48,17 +48,30 @@ kubecall() {
 
   # server
   if [ -n "$kubecall_server" ]; then
-    global_args="$global_args --server=\"$kubecall_server\""
+    #global_args="$global_args --server=\"$kubecall_server\""
+    echo "global_args=\"$global_args --server=\"$kubecall_server\""
   else
     fail "kubecall: server argument cannot be empty"
   fi
 
   # token
   if [ -n "$kubecall_token" ]; then
-    global_args="$global_args --token=\"$kubecall_token\""
+    # global_args="$global_args --token=\"$kubecall_token\""
+    echo "global_args=\"$global_args --token=\"$kubecall_token\""
   else
     fail "kubecall: token argument cannot be empty"
   fi
+
+
+  # client-certificate
+  if [ -n "$WERCKER_KUBECTL_CLIENT_CERTIFICATE" ]; then
+    global_args="$global_args --client-certificate=\"$WERCKER_KUBECTL_CLIENT_CERTIFICATE\""
+  fi
+    # client-key
+  if [ -n "$WERCKER_KUBECTL_CLIENT_KEY" ]; then
+    global_args="$global_args --client-key=\"$WERCKER_KUBECTL_CLIENT_KEY\""
+  fi
+
 
   # insecure-skip-tls-verify
   #if [ -n "$WERCKER_KUBECTL_INSECURE_SKIP_TLS_VERIFY" ]; then
@@ -148,6 +161,7 @@ pull_helm() {
 main() {
   server="$WERCKER_STEP_AURA_SERVER"
   token="$WERCKER_STEP_AURA_TOKEN"
+  kubeconfig="$KUBECONFIG_TEXT"
 
   # echo "INFO: WERCKER_STEP_AURA_SERVER - $WERCKER_STEP_AURA_SERVER"
   # echo "INFO: WERCKER_STEP_AURA_TOKEN - $WERCKER_STEP_AURA_TOKEN"
@@ -156,9 +170,23 @@ main() {
 
   # this part should alternatively take a pasted kubeconfig 
   # and make kubecall just use the right context in the new file
-  generate_kubeconfig "$server" "$token" "cluster1"
-  echo "Created kubeconfig:"
-  cat /root/.kube/config
+
+  ROOT_KUBECONFIG_PATH="/root/.kube/config"
+
+  if [ "${KUBECONFIG_TEXT}" -ne "" ] ; then
+     echo "Using supplied kubeconfig"
+     echo "${KUBECONFIG_TEXT}" >> ${ROOT_KUBECONFIG_PATH}
+
+     # for testing
+     token="token"
+     server="server"
+  else
+     echo "Generating kubeconfig"
+     generate_kubeconfig "$server" "$token" "cluster1"
+  fi
+
+  echo "Using kubeconfig:"
+  cat "${ROOT_KUBECONFIG_PATH}"
 
 
   # for running an unpublished step, kubectl and helm must be pulled during run
@@ -173,6 +201,9 @@ main() {
 
   echo "Set up access control"
   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
+
+  # for testing
+  exit
 
   # lowerCase=$(echo "$INSTALL_TYPE" | tr '[:upper:]' '[:lower:]' )
 

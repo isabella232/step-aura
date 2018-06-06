@@ -18,6 +18,14 @@ roleRef:
   apiGroup: ""
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: aura-job-secret
+  annotations:
+    kubernetes.io/service-account.name: aura-job
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: helm
