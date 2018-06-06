@@ -29,10 +29,7 @@ kubecall() {
 
   echo "kubecall called with: "
   echo "         kubecall_command = $kubecall_command"
-  echo "         kubecall_server  = $kubecall_server"
-  echo "         WERCKER_STEP_ROOT = $WERCKER_STEP_ROOT"
  
-
   if [ -z "$kubecall_command" ]; then
     fail "kubecall: command argument cannot be empty"
     # local echo "FAIL: kubecall: command argument cannot be empty"
@@ -45,37 +42,35 @@ kubecall() {
   global_args=
   raw_global_args="$WERCKER_AURA_RAW_GLOBAL_ARGS"
 
-
   # server
-  if [ -n "$kubecall_server" ]; then
-    #global_args="$global_args --server=\"$kubecall_server\""
-    echo "skipping server param"
-  else
-    fail "kubecall: server argument cannot be empty"
-  fi
+  #if [ -n "$kubecall_server" ]; then
+  #  global_args="$global_args --server=\"$kubecall_server\""
+  #else
+  #  fail "kubecall: server argument cannot be empty"
+  #fi
 
   # token
-  if [ -n "$kubecall_token" ]; then
-    # global_args="$global_args --token=\"$kubecall_token\""
-    echo "skipping token param"
-  else
-    fail "kubecall: token argument cannot be empty"
-  fi
+  #if [ -n "$kubecall_token" ]; then
+  # global_args="$global_args --token=\"$kubecall_token\""
+  #else
+  #  fail "kubecall: token argument cannot be empty"
+  #fi
 
   # client-certificate
-  if [ -n "$WERCKER_KUBECTL_CLIENT_CERTIFICATE" ]; then
-    global_args="$global_args --client-certificate=\"$WERCKER_KUBECTL_CLIENT_CERTIFICATE\""
-  fi
-    # client-key
-  if [ -n "$WERCKER_KUBECTL_CLIENT_KEY" ]; then
-    global_args="$global_args --client-key=\"$WERCKER_KUBECTL_CLIENT_KEY\""
-  fi
+  #if [ -n "$WERCKER_KUBECTL_CLIENT_CERTIFICATE" ]; then
+  #  global_args="$global_args --client-certificate=\"$WERCKER_KUBECTL_CLIENT_CERTIFICATE\""
+  #fi
+  # client-key
+  #if [ -n "$WERCKER_KUBECTL_CLIENT_KEY" ]; then
+  #  global_args="$global_args --client-key=\"$WERCKER_KUBECTL_CLIENT_KEY\""
+  #fi
 
 
   # insecure-skip-tls-verify
   #if [ -n "$WERCKER_KUBECTL_INSECURE_SKIP_TLS_VERIFY" ]; then
   #  global_args="$global_args --insecure-skip-tls-verify=\"$WERCKER_KUBECTL_INSECURE_SKIP_TLS_VERIFY\""
   #fi
+
   global_args="$global_args --insecure-skip-tls-verify=\"true\""
 
   # timeout
@@ -89,15 +84,13 @@ kubecall() {
 }
 
 
-# This is used by helm calls
+# This is used to create a kubeconfig file if the user passed server+token
+# This is also used by helm calls
 generate_kubeconfig() {
     master="$1"
     token="$2"
     clusterId="$3"
     kubeconfig_path="$4"
-
-    # echo "create /root/.kube"
-    # mkdir -p /root/.kube
 
     echo "Write config to file using master: ${master}, clusterId: ${clusterId}"
     echo "
@@ -158,10 +151,12 @@ pull_helm() {
 
 
 # main method starts here 
+# User can either pass in the text of the kubeconfig file to use,
+#  or a server+token and we will generate it for them
 main() {
+  kubeconfig="$KUBECONFIG_TEXT"
   server="$WERCKER_STEP_AURA_SERVER"
   token="$WERCKER_STEP_AURA_TOKEN"
-  kubeconfig="$KUBECONFIG_TEXT"
 
   # echo "INFO: WERCKER_STEP_AURA_SERVER - $WERCKER_STEP_AURA_SERVER"
   # echo "INFO: WERCKER_STEP_AURA_TOKEN - $WERCKER_STEP_AURA_TOKEN"
@@ -169,24 +164,16 @@ main() {
   echo "INFO: INSTALL_TYPE - $INSTALL_TYPE"
   echo "INFO: KUBECONFIG_TEXT - $KUBECONFIG_TEXT"
 
-  # this part should alternatively take a pasted kubeconfig 
-  # and make kubecall just use the right context in the new file
-
   ROOT_KUBECONFIG_PATH="/root/.kube/config"
   mkdir "/root/.kube/"
 
   if [ ! "${KUBECONFIG_TEXT}" = "" ] ; then
      echo "Using supplied kubeconfig"
-     # echo "${KUBECONFIG_TEXT}" >> ${ROOT_KUBECONFIG_PATH}
 
      # wercker maps newlines to "\n" all on a single line
      echo "${KUBECONFIG_TEXT}" | sed 's/\\n/\
 /g' >> ${ROOT_KUBECONFIG_PATH}
 
-
-     # for testing
-     token="token"
-     server="server"
   else
      echo "Generating kubeconfig"
      generate_kubeconfig "$server" "$token" "cluster1" "${ROOT_KUBECONFIG_PATH}"
@@ -207,7 +194,7 @@ main() {
 
 
   echo "Set up access control"
-  kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
+  kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" 
 
 }
 
@@ -220,28 +207,26 @@ testexit() {
       echo "Uninstalling Aura"
 
       echo "Delete previous install job"
-      kubecall "delete job -n aura uninstall-aura-full --ignore-not-found" "$server" "$token"
+      kubecall "delete job -n aura uninstall-aura-full --ignore-not-found"
 
       echo "Apply the uninstaller job"
-      kubecall "apply -f ${WERCKER_STEP_ROOT}/aura-uninstaller-job-full.yml" "$server" "$token"
+      kubecall "apply -f ${WERCKER_STEP_ROOT}/aura-uninstaller-job-full.yml"
   else
       echo "Installing Aura" 
 
       echo "Delete previous install job"
-      #kubecall "delete job -n aura install-aura --ignore-not-found" "$server" "$token"
-      kubecall "delete job -n aura install-aura-full --ignore-not-found" "$server" "$token"
-      #kubecall "delete job -n aura install-events-broker --ignore-not-found" "$server" "$token"
+      kubecall "delete job -n aura install-aura-full --ignore-not-found"
 
       echo "Create aura namespace"
       # don't fail here if aura namespace exists
-      kubecall "create namespace aura" "$server" "$token" || true
+      kubecall "create namespace aura" || true
 
       echo "Set up Istio injection"
-      kubecall "label namespace default istio-injection=enabled --overwrite=true" "$server" "$token" 
+      kubecall "label namespace default istio-injection=enabled --overwrite=true"
 
       # this should come from public public storage
       echo "Apply the installer job"
-      kubecall "apply -f ${WERCKER_STEP_ROOT}/aura-installer-job-full.yml" "$server" "$token"
+      kubecall "apply -f ${WERCKER_STEP_ROOT}/aura-installer-job-full.yml"
   fi
 
 }
