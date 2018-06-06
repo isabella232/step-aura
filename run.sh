@@ -209,8 +209,10 @@ main() {
   echo "Set up access control"
   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" "$server" "$token"
 
+}
+
   # for testing
-  exit 0
+testexit() {
 
   # lowerCase=$(echo "$INSTALL_TYPE" | tr '[:upper:]' '[:lower:]' )
 
