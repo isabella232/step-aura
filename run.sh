@@ -94,9 +94,10 @@ generate_kubeconfig() {
     master="$1"
     token="$2"
     clusterId="$3"
+    kubeconfig_path="$4"
 
-    echo "create /root/.kube"
-    mkdir -p /root/.kube
+    # echo "create /root/.kube"
+    # mkdir -p /root/.kube
 
     echo "Write config to file using master: ${master}, clusterId: ${clusterId}"
     echo "
@@ -117,7 +118,7 @@ generate_kubeconfig() {
       - name: user-${clusterId}
         user:
               token: ${token}
-    " > /root/.kube/config
+    " > "$kubeconfig_path"
 
 }
 
@@ -172,6 +173,7 @@ main() {
   # and make kubecall just use the right context in the new file
 
   ROOT_KUBECONFIG_PATH="/root/.kube/config"
+  mkdir "/root/.kube/"
 
   if [ ! "${KUBECONFIG_TEXT}" = "" ] ; then
      echo "Using supplied kubeconfig"
@@ -182,7 +184,7 @@ main() {
      server="server"
   else
      echo "Generating kubeconfig"
-     generate_kubeconfig "$server" "$token" "cluster1"
+     generate_kubeconfig "$server" "$token" "cluster1" "${ROOT_KUBECONFIG_PATH}"
   fi
 
   echo "Using kubeconfig:"
