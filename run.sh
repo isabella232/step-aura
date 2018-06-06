@@ -196,11 +196,7 @@ main() {
   echo "Set up access control"
   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" 
 
-}
-
-  # for testing
-testexit() {
-
+  # todo:  convert the input to lowercase before comparing
   # lowerCase=$(echo "$INSTALL_TYPE" | tr '[:upper:]' '[:lower:]' )
 
   if [ "$INSTALL_TYPE" = "uninstall" ] ; then
