@@ -177,8 +177,7 @@ main() {
 
   if [ ! "${KUBECONFIG_TEXT}" = "" ] ; then
      echo "Using supplied kubeconfig"
-     echo "${KUBECONFIG_TEXT}" >> ${ROOT_KUBECONFIG_PATH}
-
+     # echo "${KUBECONFIG_TEXT}" >> ${ROOT_KUBECONFIG_PATH}
 
      # wercker maps newlines to "\n" all on a single line
      echo "${KUBECONFIG_TEXT}" | sed 's/\\n/\
