@@ -173,7 +173,7 @@ main() {
 
   ROOT_KUBECONFIG_PATH="/root/.kube/config"
 
-  if [ "${KUBECONFIG_TEXT}" -ne "" ] ; then
+  if [ ! "${KUBECONFIG_TEXT}" = "" ] ; then
      echo "Using supplied kubeconfig"
      echo "${KUBECONFIG_TEXT}" >> ${ROOT_KUBECONFIG_PATH}
 
