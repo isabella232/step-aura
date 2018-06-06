@@ -179,6 +179,12 @@ main() {
      echo "Using supplied kubeconfig"
      echo "${KUBECONFIG_TEXT}" >> ${ROOT_KUBECONFIG_PATH}
 
+
+     # wercker maps newlines to "\n" all on a single line
+     echo "${KUBECONFIG_TEXT}" | sed 's/\\n/\
+/g' >> ${ROOT_KUBECONFIG_PATH}
+
+
      # for testing
      token="token"
      server="server"
