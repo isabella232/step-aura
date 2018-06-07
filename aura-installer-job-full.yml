@@ -37,7 +37,7 @@ spec:
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.namespace=aura-eb --set global.kafka.enabled=false --set global.kafka.url=kafka-kafka.kafka:9092 --set global.zipkinUrl='http://zipkin.istio-system:9411' --set global.fnServerUrl='http://fn-fn-api.default:80/r'"
+          value: " --set apiserver.persistence.size=50Gi --set api-server.persistence.size=50Gi --set global.namespace=aura-eb --set global.kafka.enabled=false --set global.kafka.url=kafka-kafka.kafka:9092 --set global.zipkinUrl='http://zipkin.istio-system:9411' --set global.fnServerUrl='http://fn-fn-api.default:80/r'"
         imagePullPolicy: Always
       - name: fn
         image: phx.ocir.io/oraclepaasmicroservices/aura/fn-install:0.2.1-SNAPSHOT
@@ -48,14 +48,14 @@ spec:
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+          value: " --set apiserver.persistence.size=50Gi --set api-server.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
         imagePullPolicy: Always
       - name: observability-tools
         image: phx.ocir.io/oraclepaasmicroservices/aura/observability-tools-install:0.2.1-SNAPSHOT
         command: ["sh", "-c", "install-chart"]
         env:
         - name: HELM_OPTS
-          value: " --set apiserver.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
+          value: " --set apiserver.persistence.size=50Gi --set api-server.persistence.size=50Gi --set global.images.pullpolicy=Always --set global.images.pullPolicy=Always"
         imagePullPolicy: Always
       containers:
       - name: installation-complete
