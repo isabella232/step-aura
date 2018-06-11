@@ -193,8 +193,13 @@ main() {
   fi
 
 
-  echo "Set up access control"
-  kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" 
+   # need the aura namespace before calling rbac because some accounts are created in aura 
+   echo "Create aura namespace"
+   # don't fail here if aura namespace exists
+   kubecall "create namespace aura" || true
+
+   echo "Set up access control"
+   kubecall "apply -f ${WERCKER_STEP_ROOT}/rbac.yml" 
 
   # todo:  convert the input to lowercase before comparing
   # lowerCase=$(echo "$INSTALL_TYPE" | tr '[:upper:]' '[:lower:]' )
@@ -212,10 +217,6 @@ main() {
 
       echo "Delete previous install job"
       kubecall "delete job -n aura install-aura-full --ignore-not-found"
-
-      echo "Create aura namespace"
-      # don't fail here if aura namespace exists
-      kubecall "create namespace aura" || true
 
       echo "Set up Istio injection"
       kubecall "label namespace default istio-injection=enabled --overwrite=true"
