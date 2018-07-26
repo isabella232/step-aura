@@ -34,7 +34,7 @@ build:
 publish:
   steps:
     - internal/publish-step:
-        owner: wercker
+        owner: jacob-lindholm
         private: true
 
 
