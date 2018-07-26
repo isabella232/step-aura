@@ -35,5 +35,6 @@ publish:
   steps:
     - internal/publish-step:
         owner: wercker
+        private: true
 
 
