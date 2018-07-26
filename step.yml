@@ -1,5 +1,5 @@
 name: step-aura
-version: 3.6.4
+version: 3.6.5
 summary: Step to install aura
 tags:
   - kubernetes

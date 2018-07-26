@@ -34,7 +34,7 @@ build:
 publish:
   steps:
     - internal/publish-step:
-        owner: jacob-lindholm
+        owner: aura-dev
         private: true
 
 
